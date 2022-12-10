@@ -1,9 +1,11 @@
 <script setup lang="ts">
-
+defineProps<{
+  album: string;
+}>();
 </script>
 
 <template>
   <main>
-    this is the home page
+    {{ album }}
   </main>
 </template>
