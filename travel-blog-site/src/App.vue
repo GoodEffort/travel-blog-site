@@ -4,9 +4,15 @@ import Navbar from './components/Navbar.vue';
 </script>
 
 <template>
-  <Navbar />
-  <RouterView />
+  <div class="col">
+    <navbar />
+  </div>
+
+  <div class="col">
+    <router-view />
+  </div>
 </template>
 
 <style scoped>
+
 </style>
