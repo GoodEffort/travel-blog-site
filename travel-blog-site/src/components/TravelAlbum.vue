@@ -21,13 +21,15 @@ const {
 } = storeToRefs(store);
 
 const loading = ref(false);
+const photoMode = ref<"photoName" | undefined>("photoName");
+
 // doesn't need to be reactive
 const columns: TableColumn[] = [
   {
     key: "photoDescription",
     name: "Description",
     sortable: true,
-    filterable: true
+    filterable: true,
   },
   {
     key: "photo",
@@ -55,6 +57,17 @@ function handleUpdate({
   getPhotos();
 }
 
+function togglePhotoMode() {
+  if (photoMode.value === "photoName") {
+    photoMode.value = undefined;
+    currentPageSize.value = 10;
+
+  } else {
+    photoMode.value = "photoName";
+    currentPageSize.value = 100;
+  }
+}
+
 watch(
   () => props.album,
   () => {
@@ -68,18 +81,43 @@ watch(
   <main>
     <div class="jumbotron">
       <h1 class="display-4">{{ album }}</h1>
-      <BootstrapTable
-        :columns="columns"
-        :rows="photos"
-        :totalRecordCount="totalRecordCount"
-        :pageCount="currentPageSize"
-        :loading="loading"
-        @update="handleUpdate"
-      >
-        <template #col-photo="{ row }: { row: Photo }">
-          <img :src="`${siteURL}/trips/${props.album}/${row.photoName}`" :alt="row.photoDescription" />
-        </template>
-      </BootstrapTable>
+      <div class="btn-group">
+        <button
+          class="btn"
+          :class="photoMode == 'photoName' ? 'btn-secondary': 'btn-primary'"
+          @click="togglePhotoMode"
+        >
+          <font-awesome-icon icon="list"/>
+        </button>
+        <button
+          class="btn"
+          :class="photoMode == 'photoName' ? 'btn-primary': 'btn-secondary'"
+          @click="togglePhotoMode"
+        >
+          <font-awesome-icon icon="image"/>
+        </button>
+      </div>
+      <div>
+        <BootstrapTable :columns="columns" :rows="photos" :totalRecordCount="totalRecordCount"
+          :pageCount="currentPageSize" :loading="loading" :photo-mode="photoMode"
+          :photo-url="`${siteURL}/trips/${props.album}/`" @update="handleUpdate">
+          <template #col-photo="{ row }: { row: Photo }">
+            <div>
+              <img :src="`${siteURL}/trips/${props.album}/${row.photoName}`" :alt="row.photoDescription"
+                style="object-fit: contain; width: 20vw; height: 40vw;" />
+            </div>
+          </template>
+          <template #photo-photoName="{ row }: { row: Photo }">
+            <div style="display: inline-block;  width: 20vw;">
+              <label style="overflow: hidden;">{{ row.photoDescription }}</label>
+              <div>
+                <img class="img-thumbnail" :src="`${siteURL}/trips/${props.album}/${row.photoName}`"
+                  :alt="row.photoDescription" style="object-fit: contain;" />
+              </div>
+            </div>
+          </template>
+        </BootstrapTable>
+      </div>
     </div>
   </main>
 </template>
