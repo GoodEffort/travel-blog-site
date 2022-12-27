@@ -91,6 +91,8 @@ watch(
     if (!autoLoad.value) {
       currentPageSize.value = photoMode.value === "photoName" ? originalPhotoPageSize : originalListPageSize;
     }
+    
+    getPhotos();
   }
 )
 </script>
@@ -115,6 +117,11 @@ watch(
           <font-awesome-icon icon="image"/>
         </button>
       </div>
+
+      <button class="btn" :class="autoLoad ? 'btn-primary': 'btn-secondary'" @click="autoLoad = !autoLoad">
+        <font-awesome-icon icon="sync-alt"/>
+      </button>
+
       <div>
         <BootstrapTable :columns="columns" :rows="photos" :totalRecordCount="totalRecordCount"
           :pageCount="currentPageSize" :loading="loading" :photo-mode="photoMode"
