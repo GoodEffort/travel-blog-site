@@ -4,12 +4,14 @@ import Navbar from './components/Navbar.vue';
 </script>
 
 <template>
-  <div class="col">
-    <navbar />
-  </div>
+  <div class="row">
+    <div class="col-2">
+      <navbar />
+    </div>
 
-  <div class="col">
-    <router-view />
+    <div class="col">
+      <router-view />
+    </div>
   </div>
 </template>
 
