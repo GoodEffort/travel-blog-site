@@ -27,3 +27,5 @@ coverage
 *.sln
 *.sw?
 node_modules
+
+src/stores/*-photos-list.ts
