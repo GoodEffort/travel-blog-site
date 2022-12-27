@@ -24,6 +24,7 @@ const props = withDefaults(
     multiselect?: boolean,
     initiallySelected?: any[] | any,
     photoMode?: string,
+    photoUrl?: string,
   }>(),
   {
     bordered: true,
@@ -158,6 +159,10 @@ function validSlot(key: string) {
   return !!slots[`col-${key}`];
 };
 
+function validPhotoSlot(key: string) {
+  return !!slots[`photo-${key}`];
+};
+
 const setMaxWidth = debounce(function () {
   if (tableRef.value) maxWidth.value = tableRef.value.clientWidth * 0.9;
 }, 150);
@@ -251,7 +256,7 @@ watch(
 </script>
 
 <template>
-  <div>
+  <div v-if="!props.photoMode">
     <table
       ref="table"
       class="table mt-1"
@@ -395,8 +400,14 @@ watch(
       </nav>
     </div>
   </div>
+  <div v-else>
+    <div v-for="row in rows" style="display: inline;">
+      <slot v-if="validPhotoSlot(props.photoMode)" :name="`photo-${props.photoMode}`" :value="row[props.photoMode]" :row="row" />
+      <img v-else-if="props.photoUrl" :src="props.photoUrl + row[props.photoMode]" />
+      <div v-else>Must have a photoURL or slot in photomode</div>
+    </div>
+  </div>
 </template>
-  
   
 <style scoped>
 li.page-item {
