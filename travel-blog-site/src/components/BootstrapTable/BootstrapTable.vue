@@ -277,6 +277,15 @@ watch(
   },
 )
 
+watch(
+  () => props.autoLoad,
+  (newVal) => {
+    if (newVal) {
+      currentPage.value = 0;
+    }
+    emitPageInfo();
+  },
+)
 </script>
 
 <template>
