@@ -36,7 +36,7 @@ const columns: TableColumn[] = [
     key: "photo",
   }
 ];
-const originalPhotoPageSize = 100;
+const originalPhotoPageSize = 25;
 const originalListPageSize = 10;
 
 async function getPhotos() {
