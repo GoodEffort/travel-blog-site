@@ -16,7 +16,7 @@ export const usePhotosStore = defineStore('photos', () => {
     const photos = ref<Photo[]>([]);
     const currentPage = ref(0);
     const totalPageCount = ref(0);
-    const currentPageSize = ref(100);
+    const currentPageSize = ref(25);
     const totalRecordCount = ref(0);
 
     const loading = ref(false);
