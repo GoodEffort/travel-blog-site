@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import TravelAlbum from '@/components/TravelAlbum.vue'
+import Admin from '@/components/Admin.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -15,6 +16,10 @@ const router = createRouter({
       component: TravelAlbum,
       props: true,
     },
+    {
+      path: '/admin',
+      component: Admin,
+    }
   ]
 })
 
