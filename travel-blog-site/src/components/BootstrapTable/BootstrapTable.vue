@@ -355,50 +355,6 @@ watch(
         </tr>
       </tbody>
     </table>
-    <div class="container" v-if="rows.length === 0 && !loading">
-      No Rows Found
-    </div>
-    <div v-if="pages > 1" class="px-0 text-center">
-      <nav aria-label="table navigation" style="width: fit-content" class="m-auto">
-        <ul class="pagination">
-          <li class="page-item" ref="larrow">
-            <a class="page-link" href="#" aria-label="Previous" @click="previousPage" :class="{ disabled: loading }">
-              <span aria-hidden="true">&laquo;</span>
-            </a>
-          </li>
-          <li v-if="startingIndex > 0" class="page-item">
-            <a class="page-link" href="#" aria-label="Previous" @click="promptForNewPage"
-              :class="{ disabled: loading }">
-              <span aria-hidden="true">…</span>
-            </a>
-          </li>
-          <li
-            v-for="index in numberOfPagesToShow"
-            :key="index"
-            class="page-item"
-            :class="{
-              active: currentPage == startingIndex + index - 1,
-              disabled: loading,
-            }"
-            :ref="`pagebtn${index}`"
-            @click="changePage(startingIndex + (index - 1))"
-          >
-            <a class="page-link" href="#">{{ startingIndex + index }}</a>
-          </li>
-          <li v-if="startingIndex + numberOfPagesToShow < pages" class="page-item" ref="ellipsis">
-            <a class="page-link" href="#" aria-label="Previous" @click="promptForNewPage"
-              :class="{ disabled: loading }">
-              <span aria-hidden="true">…</span>
-            </a>
-          </li>
-          <li class="page-item" ref="rarrow">
-            <a class="page-link" href="#" aria-label="Next" @click="nextPage" :class="{ disabled: loading }">
-              <span aria-hidden="true">&raquo;</span>
-            </a>
-          </li>
-        </ul>
-      </nav>
-    </div>
   </div>
   <div v-else>
     <div v-for="row in rows" style="display: inline;">
@@ -406,6 +362,50 @@ watch(
       <img v-else-if="props.photoUrl" :src="props.photoUrl + row[props.photoMode]" />
       <div v-else>Must have a photoURL or slot in photomode</div>
     </div>
+  </div>
+  <div class="container" v-if="rows.length === 0 && !loading">
+    No Rows Found
+  </div>
+  <div v-if="pages > 1" class="px-0 text-center">
+    <nav aria-label="table navigation" style="width: fit-content" class="m-auto">
+      <ul class="pagination">
+        <li class="page-item" ref="larrow">
+          <a class="page-link" href="#" aria-label="Previous" @click="previousPage" :class="{ disabled: loading }">
+            <span aria-hidden="true">&laquo;</span>
+          </a>
+        </li>
+        <li v-if="startingIndex > 0" class="page-item">
+          <a class="page-link" href="#" aria-label="Previous" @click="promptForNewPage"
+            :class="{ disabled: loading }">
+            <span aria-hidden="true">…</span>
+          </a>
+        </li>
+        <li
+          v-for="index in numberOfPagesToShow"
+          :key="index"
+          class="page-item"
+          :class="{
+            active: currentPage == startingIndex + index - 1,
+            disabled: loading,
+          }"
+          :ref="`pagebtn${index}`"
+          @click="changePage(startingIndex + (index - 1))"
+        >
+          <a class="page-link" href="#">{{ startingIndex + index }}</a>
+        </li>
+        <li v-if="startingIndex + numberOfPagesToShow < pages" class="page-item" ref="ellipsis">
+          <a class="page-link" href="#" aria-label="Previous" @click="promptForNewPage"
+            :class="{ disabled: loading }">
+            <span aria-hidden="true">…</span>
+          </a>
+        </li>
+        <li class="page-item" ref="rarrow">
+          <a class="page-link" href="#" aria-label="Next" @click="nextPage" :class="{ disabled: loading }">
+            <span aria-hidden="true">&raquo;</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
   </div>
 </template>
   
