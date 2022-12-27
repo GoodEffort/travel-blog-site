@@ -11,7 +11,8 @@
     "test:e2e:dev": "start-server-and-test 'vite dev --port 4173' :4173 'cypress open --e2e'",
     "build-only": "vite build",
     "type-check": "vue-tsc --noEmit -p tsconfig.vitest.json --composite false",
-    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
+    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
+    "importSwagger": "npx swagger-typescript-api -p https://localhost:7207/swagger/v1/swagger.json -o ./src/clients -n TravelBlogAPI.ts --modular --axios"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.2.1",
@@ -19,10 +20,13 @@
     "@fortawesome/free-regular-svg-icons": "^6.2.1",
     "@fortawesome/free-solid-svg-icons": "^6.2.1",
     "@fortawesome/vue-fontawesome": "^3.0.2",
+    "axios": "^1.2.1",
     "bootstrap": "^5.2.3",
     "i": "^0.3.7",
+    "lodash": "^4.17.21",
     "npm": "^9.2.0",
     "pinia": "^2.0.28",
+    "swagger-typescript-api": "^12.0.2",
     "vue": "^3.2.45",
     "vue-country-flag-next": "^2.3.2",
     "vue-router": "^4.1.6"
@@ -30,6 +34,7 @@
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.1.4",
     "@types/jsdom": "^20.0.1",
+    "@types/lodash": "^4.14.191",
     "@types/node": "^18.11.12",
     "@vitejs/plugin-vue": "^4.0.0",
     "@vue/eslint-config-prettier": "^7.0.0",
