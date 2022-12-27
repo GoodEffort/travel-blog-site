@@ -57,24 +57,7 @@ a:link {
 }
 
 .sidebar {
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  padding: 40px 0 0;
   box-shadow: 0 2px 5px 0 #0000000d, 0 2px 10px 0 #0000000d;
-  width: 200px;
-  z-index: 600;
-}
-
-.sidebar.sidebar-mini {
-  width: 60px;
-}
-
-@media (max-width: 991.98px) {
-  .sidebar {
-    width: 100%;
-  }
 }
 
 .sidebar .active {
