@@ -21,6 +21,7 @@ const {
 } = storeToRefs(store);
 
 const loading = ref(false);
+const autoLoad = ref(true);
 const photoMode = ref<"photoName" | undefined>("photoName");
 
 // doesn't need to be reactive
@@ -35,6 +36,8 @@ const columns: TableColumn[] = [
     key: "photo",
   }
 ];
+const originalPhotoPageSize = 100;
+const originalListPageSize = 10;
 
 async function getPhotos() {
   try {
@@ -52,8 +55,14 @@ async function getPhotos() {
 
 function handleUpdate({
   page,
+  scrollEnd,
 }: TableUpdate) {
   currentPage.value = page - 1;
+
+  if (scrollEnd && autoLoad.value) {
+    currentPageSize.value += photoMode.value === "photoName" ? originalPhotoPageSize : originalListPageSize;
+  }
+
   getPhotos();
 }
 
@@ -64,7 +73,7 @@ function togglePhotoMode() {
 
   } else {
     photoMode.value = "photoName";
-    currentPageSize.value = 100;
+    currentPageSize.value = 25;
   }
 }
 
@@ -74,6 +83,15 @@ watch(
     getPhotos();
   },
   { immediate: true }
+)
+
+watch(
+  autoLoad,
+  () => {
+    if (!autoLoad.value) {
+      currentPageSize.value = photoMode.value === "photoName" ? originalPhotoPageSize : originalListPageSize;
+    }
+  }
 )
 </script>
 
@@ -100,7 +118,7 @@ watch(
       <div>
         <BootstrapTable :columns="columns" :rows="photos" :totalRecordCount="totalRecordCount"
           :pageCount="currentPageSize" :loading="loading" :photo-mode="photoMode"
-          :photo-url="`${siteURL}/trips/${props.album}/`" @update="handleUpdate">
+          :photo-url="`${siteURL}/trips/${props.album}/`" :auto-load="autoLoad" @update="handleUpdate">
           <template #col-photo="{ row }: { row: Photo }">
             <div>
               <img :src="`${siteURL}/trips/${props.album}/${row.photoName}`" :alt="row.photoDescription"
