@@ -248,7 +248,7 @@ window.addEventListener("scroll",  () => {
     const l = list.value;
     if (l && l.scrollTop + window.innerHeight + window.scrollY >= l.scrollHeight) {
       pageSize.value = pageSize.value + props.pageCount;
-      emitPageInfo();
+      emitPageInfo(true);
     }
   }
 });
