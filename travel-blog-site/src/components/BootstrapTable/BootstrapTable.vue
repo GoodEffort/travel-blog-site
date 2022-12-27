@@ -5,8 +5,11 @@ import { computed, ref, watch, useSlots, onBeforeUpdate, onUnmounted } from "vue
 
 const slots = useSlots();
 
-const tableRef = ref<HTMLTableElement>();
-const larrowRef = ref<HTMLLIElement>();
+const table = ref<HTMLTableElement>();
+const larrow = ref<HTMLLIElement>();
+const rarrow = ref<HTMLLIElement>();
+const ellipsis = ref<HTMLLIElement>();
+const list = ref<HTMLDivElement>();
 
 const props = withDefaults(
   defineProps<{
@@ -25,6 +28,7 @@ const props = withDefaults(
     initiallySelected?: any[] | any,
     photoMode?: string,
     photoUrl?: string,
+    autoLoad?: boolean,
   }>(),
   {
     bordered: true,
@@ -35,6 +39,7 @@ const props = withDefaults(
     filter: false,
     selectable: false,
     multiselect: false,
+    autoLoad: false,
   }
 );
 
@@ -56,10 +61,11 @@ const startingIndex = ref(0);
 const filterObjects = ref<{ key: string, value: string }[]>([]);
 const navWidthSet = ref(false);
 const selectedRows = ref<any[]>();
+const pageSize = ref(props.pageCount);
 
 const pages = computed(() => {
   if (props.totalRecordCount) {
-    return Math.ceil(props.totalRecordCount / props.pageCount);
+    return Math.ceil(props.totalRecordCount / pageSize.value);
   } else {
     return 1;
   }
@@ -145,12 +151,13 @@ function changePage(index: number) {
   }
 };
 
-const emitPageInfo = debounce(function() {
+const emitPageInfo = debounce(function(scrollEnd: boolean = false) {
   const updateVal: TableUpdate = {
     sortField: sortedColumn.value?.key ?? "",
     desc: desc.value,
     page: currentPage.value + 1,
     filters: filterObjects.value,
+    scrollEnd,
   };
   emit("update", updateVal);
 }, 250);
@@ -164,12 +171,12 @@ function validPhotoSlot(key: string) {
 };
 
 const setMaxWidth = debounce(function () {
-  if (tableRef.value) maxWidth.value = tableRef.value.clientWidth * 0.9;
+  if (table.value) maxWidth.value = table.value.clientWidth * 0.9;
 }, 150);
 
 function setNavWidth() {
-  if (!navWidthSet.value && larrowRef.value) {
-    arrowWidth.value = larrowRef.value ? larrowRef.value.clientWidth : 0;
+  if (!navWidthSet.value && larrow.value) {
+    arrowWidth.value = larrow.value ? larrow.value.clientWidth : 0;
     navWidthSet.value = true;
   }
 };
@@ -236,6 +243,16 @@ function toggleSelection(row: any) {
 // was in create hook before, need to see if this still works
 window.addEventListener("resize", setMaxWidth);
 
+window.addEventListener("scroll",  () => {
+  if (props.autoLoad) {
+    const l = list.value;
+    if (l && l.scrollTop + window.innerHeight + window.scrollY >= l.scrollHeight) {
+      pageSize.value = pageSize.value + props.pageCount;
+      emitPageInfo();
+    }
+  }
+});
+
 onBeforeUpdate(() => {
   setMaxWidth();
   setNavWidth();
@@ -253,114 +270,123 @@ watch(
   { deep: true },
 );
 
+watch(
+  () => props.pageCount,
+  (newVal) => {
+    pageSize.value = newVal;
+  },
+)
+
 </script>
 
 <template>
-  <div v-if="!props.photoMode">
-    <table
-      ref="table"
-      class="table mt-1"
-      :class="{
-        'table-bordered': bordered,
-        'table-striped': selectable ? false : striped,
-        'table-condensed': condensed,
-        'table-hover': selectable,
-      }"
-    >
-      <thead>
-        <tr>
-          <th v-if="selectable"></th>
-          <th
-            v-for="column in columns"
-            :key="column.key"
-            :style="{
-              cursor: column.sortable ? 'pointer' : undefined
+  <div ref="list">
+    <div v-if="!props.photoMode">
+      <table
+        ref="table"
+        class="table mt-1"
+        :class="{
+          'table-bordered': bordered,
+          'table-striped': selectable ? false : striped,
+          'table-condensed': condensed,
+          'table-hover': selectable,
+        }"
+      >
+        <thead>
+          <tr>
+            <th v-if="selectable"></th>
+            <th
+              v-for="column in columns"
+              :key="column.key"
+              :style="{
+                cursor: column.sortable ? 'pointer' : undefined
+              }"
+              @click="toggleColumn(column)"
+            >
+              <span :class="{ 'me-1': column.sortable }">{{ column.name }}</span>
+              <font-awesome-icon v-if="column.sortable && column != sortedColumn" icon="sort" />
+              <font-awesome-icon v-else-if="column.sortable && !desc" icon="sort-down" />
+              <font-awesome-icon v-else-if="column.sortable" icon="sort-up" />
+            </th>
+          </tr>
+        </thead>
+
+        <colgroup>
+          <col v-if="selectable" />
+          <col v-for="column in columns" :key="column.key" :width="!!column.width ? `${column.width}%` : undefined" />
+        </colgroup>
+
+        <tbody v-if="filter">
+          <tr>
+            <td v-if="selectable"></td>
+            <td v-for="column in columns" :key="column.key">
+              <input v-if="column.filterable" :key="column.key" class="form-control" type="text"
+                @input="
+                  ($event) =>
+                    column.key ?
+                      setFilter(
+                        ($event.target as HTMLInputElement).value,
+                        column.key
+                      ) :
+                      undefined
+                "
+                :readonly="loading" />
+            </td>
+          </tr>
+        </tbody>
+
+        <tbody v-if="loading">
+          <tr v-for="index in pageSize" :key="index">
+            <td v-if="selectable"></td>
+            <td v-for="column in columns" :key="column.key">
+              <p class="container placeholder-glow">
+                <span class="placeholder col-12"></span>
+              </p>
+            </td>
+          </tr>
+        </tbody>
+        <tbody v-else>
+          <tr
+            v-for="row in rows"
+            :class="{
+              'table-active': isSelected(row),
+              'table-danger': rowError === undefined ? false : rowError(row),
             }"
-            @click="toggleColumn(column)"
+            :key="JSON.stringify(row)"
           >
-            <span :class="{ 'me-1': column.sortable }">{{ column.name }}</span>
-            <font-awesome-icon v-if="column.sortable && column != sortedColumn" icon="sort" />
-            <font-awesome-icon v-else-if="column.sortable && !desc" icon="sort-down" />
-            <font-awesome-icon v-else-if="column.sortable" icon="sort-up" />
-          </th>
-        </tr>
-      </thead>
-
-      <colgroup>
-        <col v-if="selectable" />
-        <col v-for="column in columns" :key="column.key" :width="!!column.width ? `${column.width}%` : undefined" />
-      </colgroup>
-
-      <tbody v-if="filter">
-        <tr>
-          <td v-if="selectable"></td>
-          <td v-for="column in columns" :key="column.key">
-            <input v-if="column.filterable" :key="column.key" class="form-control" type="text"
-              @input="
-                ($event) =>
-                  column.key ?
-                    setFilter(
-                      ($event.target as HTMLInputElement).value,
-                      column.key
-                    ) :
-                    undefined
-              "
-              :readonly="loading" />
-          </td>
-        </tr>
-      </tbody>
-
-      <tbody v-if="loading">
-        <tr v-for="index in pageCount" :key="index">
-          <td v-if="selectable"></td>
-          <td v-for="column in columns" :key="column.key">
-            <p class="container placeholder-glow">
-              <span class="placeholder col-12"></span>
-            </p>
-          </td>
-        </tr>
-      </tbody>
-      <tbody v-else>
-        <tr
-          v-for="row in rows"
-          :class="{
-            'table-active': isSelected(row),
-            'table-danger': rowError === undefined ? false : rowError(row),
-          }"
-          :key="JSON.stringify(row)"
-        >
-          <td v-if="selectable" class="fs-4" @click="toggleSelection(row)">
-            <font-awesome-icon v-if="isSelected(row)" icon="check-square" style="cursor: pointer" />
-            <font-awesome-icon v-else icon="square" style="cursor: pointer" />
-          </td>
-          <td v-for="column in columns" :key="column.key">
-            <p v-if="loading" class="container placeholder-glow">
-              <span class="placeholder col-12"></span>
-            </p>
-            <slot
-              v-else-if="validSlot('' + column.key)"
-              :name="`col-${column.key}`"
-              :value="
-                column.key ? 
-                  row[column.key]
-                  : undefined
-              "
-              :row="row"
-            />
-            <div v-else-if="column.key && row[column.key] instanceof Date">
-              {{ row[column.key].toLocaleDateString() }}
-            </div>
-            <div v-else>{{ column.key && row[column.key] }}</div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-  <div v-else>
-    <div v-for="row in rows" style="display: inline;">
-      <slot v-if="validPhotoSlot(props.photoMode)" :name="`photo-${props.photoMode}`" :value="row[props.photoMode]" :row="row" />
-      <img v-else-if="props.photoUrl" :src="props.photoUrl + row[props.photoMode]" />
-      <div v-else>Must have a photoURL or slot in photomode</div>
+            <td v-if="selectable" class="fs-4" @click="toggleSelection(row)">
+              <font-awesome-icon v-if="isSelected(row)" icon="check-square" style="cursor: pointer" />
+              <font-awesome-icon v-else icon="square" style="cursor: pointer" />
+            </td>
+            <td v-for="column in columns" :key="column.key">
+              <p v-if="loading" class="container placeholder-glow">
+                <span class="placeholder col-12"></span>
+              </p>
+              <slot
+                v-else-if="validSlot('' + column.key)"
+                :name="`col-${column.key}`"
+                :value="
+                  column.key ? 
+                    row[column.key]
+                    : undefined
+                "
+                :row="row"
+              />
+              <div v-else-if="column.key && row[column.key] instanceof Date">
+                {{ row[column.key].toLocaleDateString() }}
+              </div>
+              <div v-else>{{ column.key && row[column.key] }}</div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div v-else>
+      <div v-for="row in rows" style="display: inline;">
+        <slot v-if="validPhotoSlot(props.photoMode)" :name="`photo-${props.photoMode}`" :value="row[props.photoMode]" :row="row" />
+        <img v-else-if="props.photoUrl" :src="props.photoUrl + row[props.photoMode]" />
+        <div v-else>Must have a photoURL or slot in photomode</div>
+      </div>
     </div>
   </div>
   <div class="container" v-if="rows.length === 0 && !loading">

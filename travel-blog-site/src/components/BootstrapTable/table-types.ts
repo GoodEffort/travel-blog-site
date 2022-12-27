@@ -11,4 +11,5 @@ export type TableUpdate = {
   desc: boolean,
   page: number,
   filters: { key: string, value: string }[],
+  scrollEnd: boolean,
 }
