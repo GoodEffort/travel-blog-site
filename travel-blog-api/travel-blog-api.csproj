@@ -14,14 +14,8 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
-  
-  <ItemGroup> 
-    <Content Include="AppData\**"> 
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory> 
-    </Content> 
-  </ItemGroup>
 
-  <ItemGroup>
+  <Target Name="CreateWellKnownFolder" AfterTargets="AfterPublish">
     <MakeDir Directories="$(PublishDir).well-known" Condition="!Exists('$(PublishDir).well-known" />
-  </ItemGroup>
+  </Target>
 </Project>
