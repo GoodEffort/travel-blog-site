@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { RouterLink } from 'vue-router';
-import { ref } from 'vue';
-import CountryFlag from 'vue-country-flag-next';
+import { ref, defineAsyncComponent } from 'vue';
+
+const CountryFlag = defineAsyncComponent(() => import('vue-country-flag-next'));
 
 const selected = ref("Home");
 </script>
