@@ -28,5 +28,5 @@ coverage
 *.sw?
 node_modules
 
-src/stores/*-photos-list.ts
+#src/stores/*-photos-list.ts
 public/trips/**/*

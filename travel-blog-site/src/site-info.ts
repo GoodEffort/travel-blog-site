@@ -1,3 +1,2 @@
-//const prod = process.env.NODE_ENV === 'production';
-export const apiURL = 'https://localhost:7207';
-export const siteURL = 'http://localhost:5173/';
+export const apiURL = import.meta.env.VITE_API_BASE_URL;
+export const siteURL = import.meta.env.VITE_APP_URL;
