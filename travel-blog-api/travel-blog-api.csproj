@@ -16,6 +16,6 @@
   </ItemGroup>
 
   <Target Name="CreateWellKnownFolder" AfterTargets="AfterPublish">
-    <MakeDir Directories="$(PublishDir).well-known" Condition="!Exists('$(PublishDir).well-known" />
+    <MakeDir Directories="$(PublishDir).well-known" Condition="!Exists('$(PublishDir).well-known')" />
   </Target>
 </Project>
