@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { RouterLink } from 'vue-router';
+import { ref } from 'vue';
 import CountryFlag from 'vue-country-flag-next';
 
-const selected: string = "Home";
+const selected = ref("Home");
 </script>
 
 <template>
