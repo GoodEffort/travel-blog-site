@@ -19,6 +19,7 @@ builder.Services.AddSwaggerGen(options =>
         Description = "An ASP.NET Core Web API for getting photos from my google photos album."
     });
 });
+
 builder.Services.AddSingleton<IMongoDBRepo, MongoDBRepo>();
 
 var app = builder.Build();
@@ -40,12 +41,12 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseStaticFiles(); // wwwroot
-app.UseStaticFiles(new StaticFileOptions
-{
-    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @".well-known")),
-    RequestPath = new PathString("/.well-known"),
-    ServeUnknownFileTypes = true // serve extensionless file
-});
+// app.UseStaticFiles(new StaticFileOptions
+// {
+//     FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @".well-known")),
+//     RequestPath = new PathString("/.well-known"),
+//     ServeUnknownFileTypes = true // serve extensionless file
+// });
 
 app.UseForwardedHeaders(new ForwardedHeadersOptions
 {

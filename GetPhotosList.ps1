@@ -1,3 +1,5 @@
+#This file lets me create a list of photos for a trip in the travel-blog-site project to auto import into the photos-list.ts file which is then sent to the API to save in MongoDB
+
 $tripName = $args[0]
 #echo "Trip name: $tripName"
 $listFilePath = "./travel-blog-site/src/stores/$($tripName.toLower())-photos-list.ts"

@@ -10,8 +10,6 @@ const TravelBlogAPI = new TravelBlog({
     baseURL: apiURL,
 });
 
-// I haven't used composition API before, but I like it so far
-
 export const usePhotosStore = defineStore('photos', () => {
     const photos = ref<Photo[]>([]);
     const currentPage = ref(0);
