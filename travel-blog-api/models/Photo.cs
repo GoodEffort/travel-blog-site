@@ -1,14 +1,14 @@
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+
 namespace travel_blog_api.Models;
 
-public class Photo
+public partial class Photo
 {
     [Required]
-    public string Id { get; set; } = default!;
+    public int Id { get; set; }
     [Required]
-    public string TripName { get; set; } = default!;
+    public string TripName { get; set; } = null!;
     [Required]
-    public string PhotoName { get; set; } = default!;
-    [Required]
-    public string PhotoDescription { get; set; } = default!;
+    public string PhotoName { get; set; } = null!;
+    public string? Description { get; set; }
 }

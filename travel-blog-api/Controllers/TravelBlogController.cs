@@ -11,9 +11,9 @@ public class TravelBlogController : ControllerBase
 {
 
     private readonly ILogger<TravelBlogController> _logger;
-    private readonly IMongoDBRepo _repo;
+    private readonly ITravelBlogRepo _repo;
 
-    public TravelBlogController(ILogger<TravelBlogController> logger, IMongoDBRepo repo)
+    public TravelBlogController(ILogger<TravelBlogController> logger, ITravelBlogRepo repo)
     {
         _logger = logger;
         _repo = repo;
@@ -33,7 +33,7 @@ public class TravelBlogController : ControllerBase
     [HttpGet("Photo", Name = "GetPhoto")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Photo))]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public IActionResult GetPhoto(string photoId)
+    public IActionResult GetPhoto(int photoId)
     {
         var photo = _repo.Get(photoId);
         

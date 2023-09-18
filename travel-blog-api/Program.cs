@@ -1,6 +1,9 @@
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.OpenApi.Models;
+using MySqlConnector;
+using travel_blog_api.Context;
 using travel_blog_api.Repos;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,7 +23,10 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
-builder.Services.AddSingleton<IMongoDBRepo, MongoDBRepo>();
+string connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new Exception("No connection string found");
+
+builder.Services.AddDbContext<TravelblogContext>(options => options.UseMySQL(connectionString));
+builder.Services.AddScoped<ITravelBlogRepo, TravelBlogDepo>();
 
 var app = builder.Build();
 
