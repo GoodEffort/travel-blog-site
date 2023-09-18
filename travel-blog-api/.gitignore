@@ -38,3 +38,6 @@ msbuild.wrn
 
 /credentials
 /.well-known
+
+appsettings.Development.json
+appsettings.json
