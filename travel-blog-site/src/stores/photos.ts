@@ -21,6 +21,7 @@ export const usePhotosStore = defineStore('photos', () => {
 
     async function getPhotos(TripName: string, page: number, pageSize: number = 10) {
         loading.value = true;
+
         let error: Error | undefined = undefined;
         const response = await TravelBlogAPI.getPhotos({ TripName, page, pageSize });
 
@@ -75,5 +76,22 @@ export const usePhotosStore = defineStore('photos', () => {
         loading.value = false;
     }
 
-    return { photos, currentPage, totalPageCount, totalRecordCount, currentPageSize, loading, getPhotos, generatePhotos };
+    async function clearPhotos() {
+        photos.value = [];
+        currentPage.value = 0;
+        totalPageCount.value = 0;
+        totalRecordCount.value = 0;
+    }
+
+    return {
+        photos,
+        currentPage,
+        totalPageCount,
+        totalRecordCount,
+        currentPageSize,
+        loading,
+        getPhotos,
+        generatePhotos,
+        clearPhotos,
+    };
 });

@@ -1,10 +1,19 @@
 <script setup lang="ts">
-import { RouterLink } from 'vue-router';
-import { ref, defineAsyncComponent } from 'vue';
+import { RouterLink, useRoute } from 'vue-router';
+import { defineAsyncComponent, computed, watch } from 'vue';
+import { usePhotosStore } from '@/stores/photos';
+
+const { clearPhotos } = usePhotosStore();
 
 const CountryFlag = defineAsyncComponent(() => import('vue-country-flag-next'));
 
-const selected = ref("Home");
+const route = useRoute();
+const selected = computed(() => route.name || route.path.split('/').reverse()[0]);
+
+watch(route, () => {
+  clearPhotos();
+});
+
 </script>
 
 <template>
@@ -13,7 +22,7 @@ const selected = ref("Home");
       <div class="list-group list-group-flush">
         <router-link to="/">
           <a href="#" class="list-group-item list-group-item-action py-2 ripple" aria-current="true"
-            @click="selected = 'Home'" :class="{ active: selected === 'Home' }">
+            :class="{ active: selected === 'Home' }">
             <div>
               <font-awesome-icon icon="home" /> Home
             </div>
@@ -23,7 +32,7 @@ const selected = ref("Home");
         <hr />
 
         <router-link to="/trip/Iceland">
-          <a href="#" class="list-group-item list-group-item-action py-2 ripple" @click="selected = 'Iceland'"
+          <a href="#" class="list-group-item list-group-item-action py-2 ripple"
             :class="{ active: selected === 'Iceland' }">
             <div>
               <country-flag :country="'IS'" :size="'small'" :rounded="true" /> Iceland
@@ -32,7 +41,7 @@ const selected = ref("Home");
         </router-link>
 
         <router-link to="/trip/Scotland">
-          <a href="#" class="list-group-item list-group-item-action py-2 ripple" @click="selected = 'Scotland'"
+          <a href="#" class="list-group-item list-group-item-action py-2 ripple"
             :class="{ active: selected === 'Scotland' }">
             <div>
               <country-flag :country="'gb-sct'" :size="'small'" :rounded="true" /> Scotland
@@ -41,7 +50,7 @@ const selected = ref("Home");
         </router-link>
 
         <router-link to="/trip/England">
-          <a href="#" class="list-group-item list-group-item-action py-2 ripple" @click="selected = 'England'"
+          <a href="#" class="list-group-item list-group-item-action py-2 ripple"
             :class="{ active: selected === 'England' }">
             <div>
               <country-flag :country="'gb-eng'" :size="'small'" :rounded="true" /> England
