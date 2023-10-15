@@ -36,8 +36,6 @@ builder.Services.AddSwaggerGen(options =>
 
 string connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new Exception("No connection string found");
 
-Console.WriteLine($"connectionString: {connectionString}");
-
 builder.Services.AddDbContext<TravelblogContext>(options => options.UseMySQL(connectionString));
 builder.Services.AddScoped<ITravelBlogRepo, TravelBlogDepo>();
 builder.Services.Configure<ForwardedHeadersOptions>(options =>
