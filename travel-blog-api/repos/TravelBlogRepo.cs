@@ -24,7 +24,7 @@ public class TravelBlogDepo : ITravelBlogRepo
 
     public PagedPhotos Get(string trip, int page, int pageSize = 10)
     {
-        List<Photo> photos = Context.Photos.Where(p => p.TripName == trip).Skip(page * pageSize).Take(pageSize).ToList();
+        List<Photo> photos = Context.Photos.Where(p => p.TripName == trip).OrderBy(p => p.PhotoName).Skip(page * pageSize).Take(pageSize).ToList();
         int count = Context.Photos.Where(p => p.TripName == trip).Count();
 
         return new PagedPhotos {
