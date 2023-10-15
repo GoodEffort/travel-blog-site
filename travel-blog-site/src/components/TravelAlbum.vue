@@ -129,15 +129,15 @@ watch(
           <template #col-photo="{ row }: { row: Photo }">
             <div>
               <img :src="`${siteURL}/trips/${props.album}/${row.photoName}`" :alt="row.photoDescription"
-                style="object-fit: contain; width: 20vw; height: 40vw;" />
+                style="object-fit: contain; width: 20vw; height: 40vw;" loading="lazy" />
             </div>
           </template>
           <template #photo-photoName="{ row }: { row: Photo }">
-            <div style="display: inline-block;  width: 20vw;">
+            <div style="display: inline-block;  width: 20vw; min-height: 300px;">
               <label style="overflow: hidden;">{{ row.photoDescription }}</label>
               <div>
                 <img class="img-thumbnail" :src="`${siteURL}/trips/${props.album}/${row.photoName}`"
-                  :alt="row.photoDescription" style="object-fit: contain;" />
+                  :alt="row.photoDescription" style="object-fit: contain;" loading="lazy"/>
               </div>
             </div>
           </template>
