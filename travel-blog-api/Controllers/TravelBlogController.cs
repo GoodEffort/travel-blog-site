@@ -23,10 +23,7 @@ public class TravelBlogController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PagedPhotos))]
     public IActionResult Get(string TripName, int page = 0, int pageSize = 10)
     {
-        var now = DateTime.Now;
-        // Console.WriteLine($"GetPhotos called at {now}");
         var photos = _repo.Get(TripName, page, pageSize);
-        // Console.WriteLine($"GetPhotos returned at {DateTime.Now}, took {DateTime.Now - now}");
         return Ok(photos);
     }
 
