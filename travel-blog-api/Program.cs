@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.FileProviders;
 using Microsoft.OpenApi.Models;
 using MySqlConnector;
 using travel_blog_api.Context;
@@ -10,9 +9,21 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: "AllowSpecificOrigins",
+    policy =>
+    {
+        policy.WithOrigins("http://localhost:5173", "https://api.lukestravelblog.com", "https://lukestravelblog.com", "https://www.lukestravelblog.com")
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
 builder.Services.AddEndpointsApiExplorer();
+
 builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo
@@ -25,8 +36,15 @@ builder.Services.AddSwaggerGen(options =>
 
 string connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new Exception("No connection string found");
 
+Console.WriteLine($"connectionString: {connectionString}");
+
 builder.Services.AddDbContext<TravelblogContext>(options => options.UseMySQL(connectionString));
 builder.Services.AddScoped<ITravelBlogRepo, TravelBlogDepo>();
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders =
+        ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+});
 
 var app = builder.Build();
 
@@ -41,24 +59,11 @@ if (app.Environment.IsDevelopment())
     });
 }
 
-if (!app.Environment.IsDevelopment())
-{
-    app.UseHttpsRedirection();
-}
-
 app.UseStaticFiles(); // wwwroot
-// app.UseStaticFiles(new StaticFileOptions
-// {
-//     FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @".well-known")),
-//     RequestPath = new PathString("/.well-known"),
-//     ServeUnknownFileTypes = true // serve extensionless file
-// });
 
-app.UseForwardedHeaders(new ForwardedHeadersOptions
-{
-    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
-});
+app.UseForwardedHeaders();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
