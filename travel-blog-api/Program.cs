@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
-using MySqlConnector;
 using travel_blog_api.Context;
 using travel_blog_api.Repos;
 
