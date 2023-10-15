@@ -14,7 +14,6 @@ import 'vue-toast-notification/dist/theme-sugar.css';
 import App from './App.vue';
 
 function main() {
-
     library.add(faHome);
     library.add(faSort);
     library.add(faList);
