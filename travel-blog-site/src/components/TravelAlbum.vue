@@ -6,8 +6,10 @@ import BootstrapTable from "@/components/BootstrapTable/BootstrapTable.vue"
 import type { TableColumn, TableUpdate } from './BootstrapTable/table-types';
 import type { Photo } from '@/clients/data-contracts';
 import { siteURL } from '@/site-info';
+import { useToast } from 'vue-toast-notification';
 
 const store = usePhotosStore();
+const toast = useToast();
 
 const props = defineProps<{
   album: string;
@@ -46,7 +48,7 @@ async function getPhotos() {
   } catch (error) {
     console.error(error);
     if (error instanceof Error) {
-      alert(error.message); // make a fancy toast?
+      toast.error(error.message);
     }
   } finally {
     loading.value = false;

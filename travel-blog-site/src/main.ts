@@ -9,6 +9,8 @@ import { faSort } from '@fortawesome/free-solid-svg-icons/faSort';
 import { faSyncAlt } from '@fortawesome/free-solid-svg-icons/faSyncAlt';
 import { library} from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import ToastPlugin from 'vue-toast-notification';
+import 'vue-toast-notification/dist/theme-sugar.css';
 import App from './App.vue';
 
 function main() {
@@ -24,6 +26,7 @@ function main() {
     app.component('font-awesome-icon', FontAwesomeIcon);
     app.use(createPinia());
     app.use(router);
+    app.use(ToastPlugin);
 
     app.mount('#app');
 }
