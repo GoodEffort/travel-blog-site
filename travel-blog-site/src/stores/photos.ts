@@ -2,7 +2,6 @@ import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import type { Photo } from '@/clients/data-contracts'
 import { TravelBlog } from '@/clients/TravelBlog'
-import { photosList as icelandList } from './iceland-photos-list'
 import { apiURL } from '@/site-info'
 
 // do security stuff here if I add that later
@@ -18,6 +17,7 @@ export const usePhotosStore = defineStore('photos', () => {
     const totalRecordCount = ref(0);
 
     const loading = ref(false);
+    const autoLoad = ref(true);
 
     async function getPhotos(TripName: string, page: number, pageSize: number = 10) {
         loading.value = true;
@@ -90,6 +90,7 @@ export const usePhotosStore = defineStore('photos', () => {
         totalRecordCount,
         currentPageSize,
         loading,
+        autoLoad,
         getPhotos,
         generatePhotos,
         clearPhotos,

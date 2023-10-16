@@ -2,6 +2,8 @@
 import { RouterLink, useRoute } from 'vue-router';
 import { defineAsyncComponent, computed, watch } from 'vue';
 import { usePhotosStore } from '@/stores/photos';
+import NightModeToggle from '@/components/NightModeToggle.vue';
+import AutoLoadToggle from './AutoLoadToggle.vue';
 
 const { clearPhotos } = usePhotosStore();
 
@@ -17,47 +19,41 @@ watch(route, () => {
 </script>
 
 <template>
-  <nav class="d-lg-block sidebar bg-white">
-    <div class="position-sticky">
-      <div class="list-group list-group-flush">
+  <nav class="navbar navbar-expand-lg fixed-top">
+    <a class="navbar-brand" href="#">Luke Hovarter</a>
+    <ul class="navbar-nav">
+      <li class="nav-item" :class="{ active: selected === 'Home' }">
         <router-link to="/">
-          <a href="#" class="list-group-item list-group-item-action py-2 ripple" aria-current="true"
-            :class="{ active: selected === 'Home' }">
-            <div>
-              <font-awesome-icon icon="home" /> Home
-            </div>
-          </a>
+          <font-awesome-icon icon="home" />
+          &nbsp;
+          <span class="label">Home</span>
         </router-link>
-
-        <hr />
-
+      </li>
+      <li class="nav-item" :class="{ active: selected === 'Iceland' }">
         <router-link to="/trip/Iceland">
-          <a href="#" class="list-group-item list-group-item-action py-2 ripple"
-            :class="{ active: selected === 'Iceland' }">
-            <div>
-              <country-flag :country="'IS'" :size="'small'" :rounded="true" /> Iceland
-            </div>
-          </a>
+          <country-flag :country="'IS'" :size="'small'" :rounded="true" />
+          &nbsp;
+          <span class="label">Iceland</span>
         </router-link>
-
+      </li>
+      <li class="nav-item" :class="{ active: selected === 'Scotland' }">
         <router-link to="/trip/Scotland">
-          <a href="#" class="list-group-item list-group-item-action py-2 ripple"
-            :class="{ active: selected === 'Scotland' }">
-            <div>
-              <country-flag :country="'gb-sct'" :size="'small'" :rounded="true" /> Scotland
-            </div>
-          </a>
+          <country-flag :country="'gb-sct'" :size="'small'" :rounded="true" />
+          &nbsp;
+          <span class="label">Scotland</span>
         </router-link>
-
+      </li>
+      <li class="nav-item" :class="{ active: selected === 'England' }">
         <router-link to="/trip/England">
-          <a href="#" class="list-group-item list-group-item-action py-2 ripple"
-            :class="{ active: selected === 'England' }">
-            <div>
-              <country-flag :country="'gb-eng'" :size="'small'" :rounded="true" /> England
-            </div>
-          </a>
+          <country-flag :country="'gb-eng'" :size="'small'" :rounded="true" />
+          &nbsp;
+          <span class="label">England</span>
         </router-link>
-      </div>
+      </li>
+    </ul>
+    <div>
+      <auto-load-toggle id="autoload" />
+      <night-mode-toggle />
     </div>
   </nav>
 </template>
@@ -82,5 +78,52 @@ a:link {
   padding-top: 0.5rem;
   overflow-x: hidden;
   overflow-y: auto;
+}
+
+nav.navbar {
+  justify-content: space-between;
+  padding-left: 1em;
+  padding-right: 1em;
+}
+
+nav.navbar li.nav-item:last-child {
+  margin-left: 1em;
+}
+
+nav.navbar li.nav-item:not(:last-child)::after {
+  margin-left: 1em;
+  content: '|';
+  display: inline;
+  width: 0;
+  height: 2px;
+  color: white;
+  transition: width .3s;
+}
+
+nav.navbar li.nav-item.active > a > span {
+  color: hsl(25, 70%, 45%);
+  border-bottom: hsl(25, 70%, 45%) 2px solid;
+}
+
+nav.navbar li.nav-item {
+  width: 7em;
+}
+
+nav.navbar a.navbar-brand {
+  margin-right: 0px;
+}
+
+#autoload {
+  margin-right: 0.5em;
+}
+
+nav.navbar {
+  background-color: white;
+  border-bottom: 1px solid black;
+}
+
+html.dark nav.navbar {
+  background-color: #000000;
+  border-bottom: 1px solid #5f5f5f;
 }
 </style>

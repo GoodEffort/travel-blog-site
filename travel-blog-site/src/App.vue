@@ -7,17 +7,6 @@ document.title = siteTitle;
 </script>
 
 <template>
-  <div class="row" style="margin-left: 0px; margin-right: 0px;">
-    <div class="col-2">
-      <navbar />
-    </div>
-
-    <div class="col">
-      <router-view />
-    </div>
-  </div>
+  <navbar />
+  <router-view />
 </template>
-
-<style scoped>
-
-</style>
