@@ -48,34 +48,6 @@ export const usePhotosStore = defineStore('photos', () => {
         if (error) throw error;
     }
 
-    async function generatePhotos(TripName: string) {
-        loading.value = true;
-        for (const photoId of icelandList) {
-            const getReponse = await TravelBlogAPI.getPhoto({ photoId });
-            if (getReponse.status !== 200) {
-                const newPhoto: Photo = {
-                    id: photoId,
-                    tripName: TripName,
-                    photoDescription: 'Auto Generated Description, photo: ' + photoId,
-                    photoName: photoId,
-                };
-
-                try {
-                    const createResponse = await TravelBlogAPI.createPhoto(newPhoto);
-                    if (createResponse.status !== 201) {
-                        console.error(`Error creating photo ${photoId}: ${createResponse.statusText}`);
-                    } else {
-                        console.log(`Created photo ${photoId}`);
-                    }
-                } catch (error) {
-                    // probably a duplicate
-                    console.error(`Error creating photo ${photoId}: ${error}`);
-                }
-            }
-        }
-        loading.value = false;
-    }
-
     async function clearPhotos() {
         photos.value = [];
         currentPage.value = 0;
@@ -92,7 +64,6 @@ export const usePhotosStore = defineStore('photos', () => {
         loading,
         autoLoad,
         getPhotos,
-        generatePhotos,
         clearPhotos,
     };
 });
